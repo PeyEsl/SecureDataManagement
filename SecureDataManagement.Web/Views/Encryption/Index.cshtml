@@ -1,0 +1,102 @@
+﻿@model SecureDataManagement.Web.Models.ViewModels.EncryptRequestViewModel
+
+@{
+    ViewData["Title"] = "Encryption";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@functions {
+    public string Truncate(string text, int maxLength)
+    {
+        if (string.IsNullOrEmpty(text) || text.Length <= maxLength)
+        {
+            return text;
+        }
+        else
+        {
+            return $"{text.Substring(0, maxLength)}...";
+        }
+    }
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success text-center">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger text-center">
+                @TempData["ErrorMessage"]
+            </div>
+        }
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger text-center">
+                Please fix the errors below and try again.
+            </div>
+        }
+        <div class="card mt-5">
+            <div class="card-header text-center">
+                <h4>Encryption Form</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" asp-action="Encrypt" asp-controller="Encryption">
+                    <div class="form-group">
+                        <label for="plainText">Enter Text:</label>
+                        <input type="text" class="form-control" id="plainText" name="PlainText" value="@Model?.PlainText" required>
+                    </div>
+                    <div class="form-group mt-3">
+                        <label for="algorithmType">Select Algorithm:</label>
+                        <select class="form-control" id="algorithmType" name="Algorithm" required>
+                            <option value="" disabled selected>Select an algorithm</option>
+                            <option value="AES">AES</option>
+                            <option value="RSA">RSA</option>
+                            <option value="HASHING">Hashing</option>
+                            <option value="KEYDERIVATION">Key Derivation</option>
+                            <option value="DATAPROTECTION">Data Protection</option>
+                            <option value="HMAC">HMAC</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block mt-4">Encrypt</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    @if (Model!.EncryptedDatas!.Any())
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> متن ورودی </th>
+                    <th> متن رمزگذاری شده </th>
+                    <th> الگوریتم رمزنگاری </th>
+                    <th> عملیات </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.EncryptedDatas!)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.PlainText)
+                        </td>
+                        <td>
+                            @Truncate(item.EncryptedText!, 50)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Algorithm)
+                        </td>
+                        <td>
+                            <a asp-action="Decrypt" asp-route-id="@item.Id">رمزگشایی</a> |
+                            <a asp-action="DeleteEncrypt" asp-route-id="@item.Id">حذف</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

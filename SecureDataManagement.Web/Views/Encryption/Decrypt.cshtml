@@ -1,0 +1,38 @@
+﻿@model SecureDataManagement.Web.Models.ViewModels.DecryptedDataViewModel
+
+@{
+    ViewData["Title"] = "Decryption";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row justify-content-center">
+    @if (Model != null)
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th> متن ورودی </th>
+                    <th> متن رمزگشایی شده </th>
+                    <th> الگوریتم رمزنگاری </th>
+                    <th> عملیات </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        @Model.PlainText
+                    </td>
+                    <td>
+                        @Model.DecryptedText
+                    </td>
+                    <td>
+                        @Model.Algorithm
+                    </td>
+                    <td>
+                        <a asp-action="DeleteDecrypt" asp-route-id="@Model.Id">حذف</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    }
+</div>
